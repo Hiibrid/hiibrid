@@ -14,7 +14,7 @@ main().then(() => {
     console.log("connect to DB")
 }).catch((err) => {
     console.log(err);
-})
+}) 
 
 async function main() {
     mongoose.connect("mongodb://127.0.0.1:27017/hiibrid")
