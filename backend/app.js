@@ -5,7 +5,7 @@ dotenv.config({ path: './.env' });
 const app = express();
 
 //imort route 
-import userRoute from "./Routes/user.model.js"
+import userRoute from "./Routes/user.route.js"
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -17,7 +17,7 @@ main().then(() => {
 })
 
 async function main() {
-    mongoose.connect("mongodb://127.0.0.1:27017/ecom")
+    mongoose.connect("mongodb://127.0.0.1:27017/hiibrid")
 }
 
 app.use("/api",userRoute)
