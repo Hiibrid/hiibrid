@@ -1,5 +1,6 @@
 import  express  from "express";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import dotenv from 'dotenv';
 dotenv.config({ path: './.env' });
 const app = express();
@@ -7,8 +8,10 @@ const app = express();
 //imort route 
 import userRoute from "./Routes/user.route.js"
 
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 main().then(() => {
     console.log("connect to DB")
@@ -17,7 +20,7 @@ main().then(() => {
 }) 
 
 async function main() {
-    mongoose.connect("mongodb://127.0.0.1:27017/hiibrid")
+  await  mongoose.connect("mongodb://127.0.0.1:27017/hiibrid")
 }
 
 app.use("/api",userRoute)

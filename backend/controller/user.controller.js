@@ -1,13 +1,13 @@
 import { User } from "../models/user.model.js"
 import expressError from "../utils/expressError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
-import { uploadOnCloudinary } from "../utils/cloudconfig.js"
-import jwt from "jsonwebtoken"
+
 
 
 
 const generateAccessAndRefereshTokens = async (userId) => {
     try {
+        console.log(userId);
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
@@ -25,17 +25,17 @@ const generateAccessAndRefereshTokens = async (userId) => {
 
 //register route
 const registerController = async (req, res) => {
-
-    let { username, email, password, fullname } = req.body;
+ 
+    let { username, email, password,phoneno, fullname } = req.body;
 
     //check the these fields empty or not
-    if ([fullname, username, email, password].some((field) =>
+    if ([fullname, username, email,phoneno, password].some((field) =>
         field?.trim() === "")
     ) {
         throw new expressError(400, "All fields are required")
     }
     let existedUser = await User.findOne({
-        $or: [{ email }, { username }]
+        $or: [{ email }, { phoneno }]
     })
     if (existedUser) {
         console.log(existedUser)
@@ -45,6 +45,7 @@ const registerController = async (req, res) => {
     const user = await User.create({
         username: username.toLowerCase(),
         email,
+        phoneno,
         fullname,
         password
     });
@@ -61,4 +62,60 @@ const registerController = async (req, res) => {
     )
 
 };
-export { registerController };
+
+
+// login route
+  const loginController = async (req, res) => {
+    // console.log(req.body);
+    const {email, phoneno, password} = req.body
+    console.log(phoneno);
+    // console.log(req.body);
+    if (!phoneno && !email) {
+        throw new expressError(400, "username or email is required")
+    }
+
+
+    const user = await User.findOne({
+        $or: [{phoneno}, {email}]
+    })
+    
+
+    if (!user) {
+        throw new expressError(404, "User does not exist")
+    }
+
+   const isPasswordValid = await user.isPasswordCorrect(password)
+
+   if (!isPasswordValid) {
+    throw new expressError(401, "Invalid user credentials")
+    }
+    // console.log(user._id);
+
+    const { accessToken, refreshToken  } = await generateAccessAndRefereshTokens(user._id);
+
+
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken , options)
+    .json(
+        new ApiResponse(
+            200, 
+            {
+                user: loggedInUser, accessToken, refreshToken
+            },
+            "User logged In Successfully"
+        )
+    )
+
+};
+
+
+export { registerController,loginController };

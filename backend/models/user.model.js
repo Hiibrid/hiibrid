@@ -25,6 +25,11 @@ const userSchema = new Schema({
     image:{
         type: String, //from cloudinar
     },
+    phoneno:{
+        type: Number,
+        required: true,
+        unique: true
+    },
     password:{
         type: String,  
         required:true
