@@ -1,9 +1,10 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { registerController} from "../controller/user.controller.js";
-import { loginController} from "../controller/user.controller.js";
+import { registerController,loginController,logoutControler} from "../controller/user.controller.js";
+
 import wrapAsync from "../utils/wrapAsync.js"
 import { upload } from "../middleware/multer.middleware.js";
+import{verifyJWT} from "../middleware/auth.js"
 
 
 
@@ -15,5 +16,6 @@ router.route("/signup").post( upload.fields([{ name: "avatar", maxCount: 1 }]), 
 
 // login route
 router.route("/login").post( wrapAsync(loginController));
+router.route("/logout").post( verifyJWT, wrapAsync(logoutControler));
 
 export default router;

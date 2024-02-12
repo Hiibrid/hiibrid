@@ -117,5 +117,30 @@ const registerController = async (req, res) => {
 
 };
 
+//logout controller
+const logoutControler = async (req, res) => {
+    const userId = req.user._id; // Accessing user ID
+    
+    await User.findByIdAndUpdate(userId,
+        {
+            $unset: {
+                refreshToken: 1 // Remove the refreshToken field from the document
+            }
+        },
+        {
+            new: true
+        });
 
-export { registerController,loginController };
+    const options = {
+        httpOnly: true,
+        secure: true
+    };
+
+    // Clear cookies
+    res.clearCookie("accessToken", options);
+    res.clearCookie("refreshToken", options);
+
+    return res.status(200).json(new ApiResponse(200, {}, "User logout"));
+};
+
+export { registerController,loginController,logoutControler };
