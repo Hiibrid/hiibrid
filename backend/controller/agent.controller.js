@@ -108,4 +108,29 @@ const agentLoginController = async (req, res) => {
 
 };
 
-export { agentRegisterController,agentLoginController };
+const agentLogoutControler = async (req, res) => {
+    const agent_id = req.user._id; // Accessing user ID
+    
+    await Agent.findByIdAndUpdate(agent_id,
+        {
+            $unset: {
+                refreshToken: 1 // Remove the refreshToken field from the document
+            }
+        },
+        {
+            new: true
+        });
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    };
+
+    // Clear cookies
+    res.clearCookie("accessToken", options);
+    res.clearCookie("refreshToken", options);
+
+    return res.status(200).json(new ApiResponse(200, {}, "agent logout"));
+};
+
+export { agentRegisterController,agentLoginController,agentLogoutControler };
