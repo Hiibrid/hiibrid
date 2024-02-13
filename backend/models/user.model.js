@@ -34,6 +34,22 @@ const userSchema = new Schema({
         type: String,  
         required:true
     },
+    catogry:{
+        type: String,
+        required: true
+    },
+    tenClassMarsheet:{
+        type:String, //from cloudinry  
+    },
+    twelveClassMarsheet:{
+        type: String,  //from cloudinry
+    },
+    degree:{
+        type: String, // from cloudinry
+    },
+    aadharCard:{
+        type: String, //from cloudinry
+    },
     refreshToken: {
         type: String
     },

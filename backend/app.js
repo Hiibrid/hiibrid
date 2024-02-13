@@ -7,6 +7,7 @@ const app = express();
 
 //imort route 
 import userRoute from "./Routes/user.route.js"
+import agentRoute from "./Routes/agent.route.js"
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +24,8 @@ async function main() {
   await  mongoose.connect("mongodb://127.0.0.1:27017/hiibrid")
 }
 
-app.use("/api",userRoute)
+app.use("/api",userRoute);
+app.use("/api/agent",agentRoute);
 
 
 //error handler for wrong address
