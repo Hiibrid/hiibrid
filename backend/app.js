@@ -8,6 +8,7 @@ const app = express();
 //imort route 
 import userRoute from "./Routes/user.route.js"
 import agentRoute from "./Routes/agent.route.js"
+import formRoute from "./Routes/form.route.js"
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +27,7 @@ async function main() {
 
 app.use("/api",userRoute);
 app.use("/api/agent",agentRoute);
+app.use("/api",formRoute);
 
 
 //error handler for wrong address
